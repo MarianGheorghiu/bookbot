@@ -1,43 +1,41 @@
+import sys
+
+from stats import get_num_words, count_characters, sorted_chars_dict
+
+if len(sys.argv) != 2:
+    print("Usage: python3 main.py <path_to_book>")
+    sys.exit(1)
+    
+book_path = sys.argv[1]
+
 def main():
-    with open("books/frankenstein.txt") as f:
+    text = get_book_text(book_path)
+    
+    num_words = get_num_words(text)
+    print(f"{num_words} words found in the document")
+    
+    num_chars = count_characters(text)
+    print(num_chars)
+    
+    chars_sorted_list = sorted_chars_dict(num_chars)
+    print_report(book_path, num_words, chars_sorted_list)
+    
+
+def get_book_text(path):
+    with open(path) as f:
         return f.read()
-
-def count_words():
-    words = main().split()
-    return len(words)
     
-def count_characters():
-    count_chars = {}
-    book = main().lower()
-    for char in book:
-        if char in count_chars:
-            count_chars[char] += 1
-        else:
-            count_chars[char] = 1
-    return count_chars
+def print_report(book_path, num_words, chars_sorted_list):
+    print("============ BOOKBOT ============")
+    print(f"Analyzing book found at {book_path}...")
+    print("----------- Word Count ----------")
+    print(f"Found {num_words} total words")
+    print("--------- Character Count -------")
+    for item in chars_sorted_list:
+        if not item["char"].isalpha():
+            continue
+        print(f"{item['char']}: {item['num']}")
 
-def sort_on(dict):
-    return dict["value"]
+    print("============= END ===============")
 
-def sort_book():
-    total_chars = count_characters()
-    result = []
-    for char in total_chars:
-        if char in total_chars and char.isalpha():
-            result.append({"name": char, "value": total_chars[char]})
-        result.sort(reverse=True, key=sort_on)
-    return result
-
-def report():
-    print(" --Begin report of books/frankenstein.txt ---")
-    print(f"{count_words()} words found in the document")
-    print()
-    sorted_chars = sort_book()
-    for char in sorted_chars:
-        print(f"The '{char["name"]}' character was found {char["value"]} times")
-    print()
-    print("--- End report ---")
-    
-report()
-    
-    
+main()
